@@ -54,12 +54,17 @@ async def delete_user(user_id: UUID):
     raise HTTPException(status_code=404, detail=f"User not found with id {user_id}")
 
 @app.put("/users/{user_id}")
-def update_user(user_id: UUID, user: User):
+def update_user(user: User, user_id: UUID):
     for u in db:
         if u.id == user_id:
-            u.first_name = user.first_name
-            u.last_name = user.last_name
-            u.middle_name = user.middle_name
-            return {"msg": "User deleted successfully"}
+            if user.first_name is not None:
+                u.first_name = user.first_name
+            if user.last_name is not None:
+                u.last_name = user.last_name
+            if user.middle_name is not None:
+                u.middle_name = user.middle_name
+            if user.role is not None:
+                u.role = user.role
+            return {"msg": "User updated successfully"}
         
     raise HTTPException(status_code=404, detail=f"User not found with id {user_id}")
